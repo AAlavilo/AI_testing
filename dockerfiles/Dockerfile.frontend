@@ -1,0 +1,19 @@
+# Frontend Dockerfile (Vite + React)
+FROM node:20.9.0 AS builder
+WORKDIR /app
+ENV HOME=/app
+ENV NPM_CONFIG_CACHE=/app/.npm
+
+COPY ../Oppimisalusta/studyPlatform/package*.json ./
+RUN npm install --unsafe-perm
+RUN npm install react-player --unsafe-perm
+COPY ../Oppimisalusta/studyPlatform/ ./
+RUN npm run build
+
+FROM nginx:alpine
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+RUN chgrp -R 0 /usr/share/nginx/html && chmod -R g+rwX /usr/share/nginx/html
+
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

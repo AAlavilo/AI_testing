@@ -1,0 +1,14 @@
+# Backend Dockerfile (Node.js API)
+FROM node:20.9.0
+WORKDIR /app
+ENV HOME=/app
+ENV NPM_CONFIG_CACHE=/app/.npm
+
+COPY ../Oppimisalusta/studyPlatform/package*.json ./
+RUN npm install --unsafe-perm
+COPY ../Oppimisalusta/studyPlatform/ ./
+
+RUN chgrp -R 0 /app && chmod -R g+rwX /app
+
+EXPOSE 3000
+CMD ["node", "app.js"]
